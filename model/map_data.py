@@ -13,4 +13,4 @@ class Marker(EmbeddedDocument):
     x = IntField()
     y = IntField()
 
-
+    id = ObjectIdField()

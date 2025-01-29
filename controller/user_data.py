@@ -1,3 +1,4 @@
+from bson import ObjectId
 from model.map_data import Marker
 from model.player_data import PlayerData
 
@@ -31,9 +32,9 @@ class UserDataController:
         return list(filter(lambda marker: marker.marker_type_name is name, current_user.map_data))
 
     @staticmethod
-    def find_existing_marker_with_name(current_user, marker_name):
+    def find_existing_marker_with_id(current_user, marker_id):
         for marker in current_user.map_data:
-            if marker.name is marker_name:
+            if marker.id == ObjectId(marker_id):
                 return marker
         return None
 

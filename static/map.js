@@ -1,4 +1,7 @@
 
+const SUBMIT_NEW_TEXT = 'Add Marker';
+const SUBMIT_EDIT_TEXT = 'Update Marker';
+const NEW_TYPE_DROPDOWN_OPTION = 'Create New Type';
 let markerTypes = new Set();
 let svg;
 
@@ -94,18 +97,32 @@ function doesMarkerPassDepthFilter(marker) {
     return marker.depth <= max_depth && marker.depth >= min_depth
 }
 
-function renderMarker(marker) { //, index, selection) {
+function onClickMarkerCircleElement(event) {
+    var parentNode = event.target.parentNode
+    var textNode = parentNode.querySelector('text')
+    var titleNode = parentNode.querySelector('title')
+    var circleNode = parentNode.querySelector('circle')
 
-//    if (! isMarkerTypeEnabled(marker.marker_type)) {
-//        console.log("Skipping marker: " + marker.name)
-//        return
-//    }
+    // Find marker object
+    var marker = allMarkers.filter(marker => marker.name == textNode.textContent)[0]
 
+    // Populate edit form
+    populateMarkerForm(marker)
+}
+
+function populateMarkerForm(marker) {
+    document.querySelector('.new-bearing-form .new-bearing-name').value = marker.name
+    document.querySelector('.new-bearing-form input[name="distance"]').value = marker.distance
+    document.querySelector('.new-bearing-form input[name="depth"]').value = marker.depth
+    document.querySelector('.new-bearing-form input[name="heading"]').value = marker.bearing
+    document.querySelector('.new-bearing-form select[name="marker_type"]').value = marker.marker_type
+    document.querySelector('.new-bearing-form input[name="marker_id"]').value = marker.id
+    document.querySelector('.new-bearing-form input[name="submit"]').value = SUBMIT_EDIT_TEXT
+}
+
+
+function renderMarker(marker) {
     console.log("Rendering marker: " + marker.name)
-//    const node = selection[0]
-//    node.setAttribute("marker-type", marker.marker_type)
-
-//    const node = selection.attr("marker-type", marker.markerType)
 
     const node = svg //.selectAll(".nodes")
         //.data(dataset.nodes)
@@ -113,6 +130,7 @@ function renderMarker(marker) { //, index, selection) {
         .append("g")
         .attr("class", "nodes")
         .attr("marker-type", marker.marker_type)
+        .on("click", onClickMarkerCircleElement)
 
     let opacity = 1.0 - Math.min(-marker.depth / 1000.0, .8);
 
@@ -120,6 +138,7 @@ function renderMarker(marker) { //, index, selection) {
         .attr("transform", function() {
             return "translate(" + margin + "," + margin + ")";
         })
+//        .on("click", onClickMarkerCircleElement)
         .attr("cx", xScale(marker.x))
         .attr("cy", yScale(marker.y))
         .attr("fill", d3.rgb("#FF0000"))  // TODO: use marker-specific color instead

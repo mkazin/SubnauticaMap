@@ -48,6 +48,30 @@ app.secret_key = subnautical.GOOGLE_CLIENT_SECRET
 client = WebApplicationClient(subnautical.GOOGLE_CLIENT_ID)
 
 
+
+from bson.objectid import ObjectId
+def populate_marker_id(user):
+    user_changed = False
+    for marker in user.map_data:
+        if not hasattr(marker, 'id') or marker.id is None:
+            marker.id = ObjectId()
+            user_changed = True
+            print(f"{marker.name} assigned ObjectId: {marker.id}")
+
+    return user_changed
+
+def upgrade_all_users():
+    print(f"Upgrading users data...")
+    for user in PlayerData.objects:
+        print(f"Upgrading user: {user.name}")
+        if populate_marker_id(user):
+            print(f"-- Saving upgraded record for user {user.name}")
+            user.save(cascade=True)
+    print(f"Upgrading complete.")
+
+upgrade_all_users()
+
+
 @app.route('/')
 def hello_world():
     if current_user.is_authenticated and not current_user.is_anonymous:
@@ -62,31 +86,49 @@ def hello_world():
 @app.route('/marker', methods=['PUT', 'POST'])
 @login_required
 def add_marker():
+    print("add_marker called")
     try:
         heading = float(request.form['heading'])
         distance = int(request.form['distance'])
         depth = int(request.form['depth'])
         marker_name = request.form['name']
+        marker_id = request.form.get('marker_id', None)
 
-        marker_type_name = request.form['new_type'] or request.form['marker_type']
-        try:
-            color = request.form['color']
-        except KeyError:
-            color = '555555'
+        marker_type_name = request.form['marker_type'] or request.form['new_type']
+        marker_color = request.form.get('color', '555555')
 
         x, y = Charting.get_cartesean_coords(distance, depth, heading)
 
-        existing_marker = UserDataController.find_existing_marker_with_name(current_user, marker_name)
+        print(f"Searched for marker with id {marker_id}")
+        existing_marker = UserDataController.find_existing_marker_with_id(current_user, marker_id)
         if existing_marker:
-            old_type_name = existing_marker.marker_type_name
-            UserDataController.update_marker_type(
-                current_user, old_type_name, marker_type_name, color)
+            print('Found existing marker: ' + existing_marker.name)
+
+            existing_marker.bearing = heading
+            existing_marker.distance = distance
+            existing_marker.depth = depth
+            existing_marker.x = x
+            existing_marker.y = y
+            existing_marker.name = marker_name
+
+            # old_type_name = existing_marker.marker_type_name
+            # old_type_color = existing_marker.color
+            existing_marker.marker_type_name = marker_type_name
+            current_user.save(cascade=True)
+
+            # This is a rename functionality that does not have a UI yet (above too)
+            # if old_type_name == marker_type_name:
+            #     UserDataController.update_marker_type(
+            #         current_user, old_type_name, marker_type_name, marker_color)
+            #     flash("Marker Type updated")
         else:
+            print('Adding new marker: ' + marker_name)
             new_marker = Marker(
                 bearing=heading, distance=distance, depth=depth, x=x, y=y,
-                name=marker_name, marker_type_name=marker_type_name, color=color)
+                name=marker_name, marker_type_name=marker_type_name, color=marker_color)
             current_user.map_data.append(new_marker)
             current_user.save(cascade=True)
+            flash("Marker added")
 
     except KeyError:
         abort(400, description="Missing value - please make sure to fill in all fields")
@@ -94,7 +136,6 @@ def add_marker():
         print('Bad form data in request: ', request.form)
         abort(400, description="Bad value - please use integers in all numeric fields")
 
-    flash("Marker added")
     return redirect('/map')
 
 
@@ -192,7 +233,6 @@ def load_player_from_db(player_id):
     player = None
     try:
         player = PlayerData.load_player(player_id)
-        print(f"load_player_from_db retrieved {player.name}")
     except DoesNotExist:
         pass
 

@@ -27,14 +27,11 @@ class PlayerData(Document, UserMixin):
 
     @staticmethod
     def load_player(player_id):
-        print(f"PlayerData.load_player called with {player_id}")
         player = PlayerData.objects.get(google_id=player_id)
-        print(f"PlayerData.load_player: mongo returned {repr(player)}")
         return player
 
     @staticmethod
     def save_player(player):
-        print('PlayerData.save_player called for ', player)
 
         if 'id' in player:
             print('PlayerData.save_player: Player already exists. Updating')
