@@ -94,7 +94,7 @@ def add_marker():
         marker_name = request.form['name']
         marker_id = request.form.get('marker_id', None)
 
-        marker_type_name = request.form['marker_type'] or request.form['new_type']
+        marker_type_name = request.form['new_type'] or request.form['marker_type']
         marker_color = request.form.get('color', '555555')
 
         x, y = Charting.get_cartesean_coords(distance, depth, heading)

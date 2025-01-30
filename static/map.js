@@ -175,6 +175,8 @@ function renderLegend() {
     document.querySelector(".legend-clear-all").addEventListener("click", function() {legendSetAll(false)})
     document.querySelector(".legend-check-all").addEventListener("click", function() {legendSetAll(true)})
     document.querySelector(".marker-type-dropdown").addEventListener("change", function() {handleDropdownSelection()})
+    document.querySelector(".marker-type-input").addEventListener("input", function () { handleNewMarkerTypeChange() })
+
     return true
 }
 
@@ -201,6 +203,16 @@ function handleDropdownSelection() {
     const markerTypeDropdown = document.querySelector('.marker-type-dropdown')
     const markerTypeInput = document.querySelector('.marker-type-input')
     markerTypeInput.value = markerTypeDropdown.value
+}
+
+function handleNewMarkerTypeChange() {
+    const markerTypeDropdown = document.querySelector('.marker-type-dropdown')
+    const markerTypeInput = document.querySelector('.marker-type-input')
+    if (markerTypeInput.value === "") {
+        markerTypeDropdown.disabled = false
+    } else {
+        markerTypeDropdown.disabled = true
+    }
 }
 
 function addLegendItemLabel(marker_type, markerTypeDiv) {
