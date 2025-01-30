@@ -1,3 +1,6 @@
 mongomock
 pytest-cov
 pytest>=4.6
+
+# Resolves CWE-835 / CVE-2024-5569Open / CVSS 6.9 / SNYK-PYTHON-ZIPP-7430899
+zipp>=3.19.1
