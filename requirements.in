@@ -1,0 +1,16 @@
+
+certifi
+flask<2.0.0
+werkzeug
+flask_login
+flask_mongoengine-3
+oauthlib
+google_auth_oauthlib
+requests
+click>7.0.0
+numpy
+
+# Required by Jinja, which is required by Flask
+markupsafe==2.0.1
+
+# pip-tools>7   # Enable to run pip-compile

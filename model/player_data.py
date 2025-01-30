@@ -1,4 +1,3 @@
-from flask_login._compat import unicode
 from mongoengine import *
 from .map_data import Marker
 from flask_login import UserMixin
@@ -19,7 +18,7 @@ class PlayerData(Document, UserMixin):
 
     """ Methods required by flask_login.LoginManager """
     def get_id(self):
-        return unicode(self.google_id)
+        return str(self.google_id)
     """ End flask_login.LoginManager requirements """
 
     def __repr__(self):
