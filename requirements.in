@@ -1,0 +1,11 @@
+certifi
+flask
+werkzeug
+flask_login
+flask_mongoengine-3
+oauthlib
+google_auth_oauthlib
+requests
+click
+numpy
+markupsafe

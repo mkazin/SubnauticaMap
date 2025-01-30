@@ -20,6 +20,7 @@ class Charting(object):
         output = []
         for mark in markers:
             marker = {
+                'id': str(mark.id),
                 'x': mark.x, 'y': mark.y,
                 'depth': int(mark.depth),
                 'bearing': int(mark.bearing),

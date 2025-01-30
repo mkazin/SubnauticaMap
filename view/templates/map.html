@@ -46,13 +46,15 @@
                         <input type="number" name="depth"/><br/>
 
                         <div class="tooltip">Type<span class="tooltiptext">Type of marker. Create new types below.</span></div>
-                        <input type="text" name="new_type" class="marker-type-input" placeholder="New Marker Type"></input>
 
                         <select name="marker_type" class="marker-type-dropdown">
                         </select>
+                        <input type="text" name="new_type" class="marker-type-input" placeholder="New Marker Type"></input>
                         <br/>
 
-                        <input type="submit" value="Add New Bearing"/>
+                        <input name="marker_id" hidden="hidden"/>
+
+                        <input name="submit" value="Add New Bearing" type="submit"/>
                     </form>
                 </div>
             </div>
