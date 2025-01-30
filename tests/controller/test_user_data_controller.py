@@ -3,7 +3,7 @@ from bson.objectid import ObjectId
 from mongoengine import connect
 from controller.user_data import UserDataController
 from model.map_data import Marker
-
+from mongomock import MongoClient
 
 class UserDataControllerTestCase(unittest.TestCase):
 
@@ -12,7 +12,7 @@ class UserDataControllerTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        UserDataControllerTestCase.db = connect('testdb', host="mongomock://localhost", port=27017)
+        UserDataControllerTestCase.db = connect('testdb', host="localhost", port=27017, mongo_client_class=MongoClient, uuidRepresentation="standard")
         UserDataControllerTestCase.db.drop_database('testdb')
         UserDataControllerTestCase._create_player()
 
@@ -129,7 +129,7 @@ class UserDataControllerTestCase(unittest.TestCase):
         self.assertEqual(marker_id_to_find, found_marker.id)
 
     def test_find_existing_marker_with_id_when_missing(self):
-        marker_id_to_find = 'No such marker'
+        marker_id_to_find = '000000000000000000000000'
         self._create_marker(marker_id=ObjectId('61421fc22222fd8ed85283ac'), name='Marker Name')
 
         found_marker = UserDataController.find_existing_marker_with_id(self.player, marker_id_to_find)
