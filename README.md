@@ -3,7 +3,7 @@ A spoiler-free mapping tool for Unknown Worlds' games: [Subnautica](https://unkn
 
 Use your compass and depth gauge to create plot points on a blank map.
 
-For a fancier alternative with spoilers, check out https://subnauticamap.io
+For a fancier alternative with spoilers, check out https://subnauticamap.io .  Self-hosting this project provides the premium feature there (though perhaps not as well? I haven't tried).
 
 # Why did I build this?
 This is a work-in-progress learning project which came to mind at just the right time to serve many purposes:
